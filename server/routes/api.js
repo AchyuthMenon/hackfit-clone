@@ -18,12 +18,11 @@ const sanitizeInput = (input) => {
 router.post('/register', async (req, res) => {
   console.log(`[POST] /api/register - Received registration request`);
   
-  // New: Check if DB is actually connected
+  // Check if DB is connected
   if (Registration.db.readyState !== 1) {
-    return res.status(500).json({ 
+    return res.status(503).json({ 
       success: false, 
-      message: 'Database is not connected. Please check your Render environment variables (MONGO_URI).',
-      error: 'DB_DISCONNECTED' 
+      message: 'Service temporarily unavailable. Database connection issue.' 
     });
   }
 
@@ -101,9 +100,9 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: messages.join(', ') });
     }
 
-    // 7. Safe fallback for other Server Errors (Temporarily exposing error for debugging)
+    // 7. Safe fallback for other Server Errors
     console.error('[POST] /api/register - Server Error:', error.message);
-    res.status(500).json({ success: false, message: 'Internal server error during registration.', error: error.message });
+    res.status(500).json({ success: false, message: 'Internal server error during registration.' });
   }
 });
 
@@ -122,8 +121,8 @@ router.post('/contact', async (req, res) => {
     await newContact.save();
     res.status(201).json({ success: true, message: 'Message sent successfully!' });
   } catch (error) {
-    console.error('Error in contact form:', error);
-    res.status(500).json({ success: false, message: 'Server error while sending message.', error: error.message });
+    console.error('Error in contact form:', error.message);
+    res.status(500).json({ success: false, message: 'Server error while sending message.' });
   }
 });
 

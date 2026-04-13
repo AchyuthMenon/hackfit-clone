@@ -31,10 +31,8 @@ const RegistrationModal = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error(error);
-      const data = error.response?.data;
-      const errorMessage = data?.message || 'Registration failed. Please try again.';
-      const detailedError = data?.error ? ` (${data.error})` : '';
-      toast.error(`${errorMessage}${detailedError}`, { id: toastId });
+      const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+      toast.error(errorMessage, { id: toastId });
     }
   };
 
