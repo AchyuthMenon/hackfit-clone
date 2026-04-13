@@ -117,4 +117,23 @@ router.post('/contact', async (req, res) => {
   }
 });
 
+// @route   GET /api/admin/registrations
+// @desc    Get all registrations (Admin only)
+router.get('/admin/registrations', async (req, res) => {
+  try {
+    const adminPassword = req.headers.authorization;
+    const storedPassword = process.env.ADMIN_PASSWORD;
+    
+    if (!adminPassword || adminPassword.trim() !== storedPassword?.trim()) {
+      return res.status(401).json({ success: false, message: 'Unauthorized. Invalid admin password.' });
+    }
+
+    const registrations = await Registration.find({}).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: registrations.length, data: registrations });
+  } catch (error) {
+    console.error('Admin API Error:', error.message);
+    res.status(500).json({ success: false, message: 'Server error while fetching registrations.' });
+  }
+});
+
 export default router;
