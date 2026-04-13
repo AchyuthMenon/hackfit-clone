@@ -17,15 +17,6 @@ const sanitizeInput = (input) => {
 // @desc    Register a team for the hackathon
 router.post('/register', async (req, res) => {
   console.log(`[POST] /api/register - Received registration request`);
-  
-  // Check if DB is connected
-  if (Registration.db.readyState !== 1) {
-    return res.status(503).json({ 
-      success: false, 
-      message: 'Service temporarily unavailable. Database connection issue.' 
-    });
-  }
-
   try {
     let { teamName, leaderName, email, phone, track, college, members } = req.body;
 
@@ -53,7 +44,7 @@ router.post('/register', async (req, res) => {
     const normalizedEmail = email.toLowerCase().trim();
     // Escape regex characters in teamName
     const safeRegexTeamName = teamName.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-    
+
     console.log(`[DEBUG] Checking duplicates for Team: "${teamName}", Email: "${normalizedEmail}"`);
 
     const existingRegistration = await Registration.findOne({
@@ -74,7 +65,7 @@ router.post('/register', async (req, res) => {
       return res.status(409).json({ success: false, message: 'Team name or email already exists.' });
     }
     console.log(`[DEBUG] No duplicates found, proceeding with save.`);
-    
+
     // 5. Save Record
     const newRegistration = new Registration({
       teamName,
@@ -94,15 +85,15 @@ router.post('/register', async (req, res) => {
     if (error.code === 11000) {
       return res.status(409).json({ success: false, message: 'A team with this expected name or email already exists (Database Constraint).' });
     }
-    
+
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map(val => val.message);
       return res.status(400).json({ success: false, message: messages.join(', ') });
     }
 
-    // 7. Safe fallback for other Server Errors
+    // 7. Safe fallback for other Server Errors (Temporarily exposing error for debugging)
     console.error('[POST] /api/register - Server Error:', error.message);
-    res.status(500).json({ success: false, message: 'Internal server error during registration.' });
+    res.status(500).json({ success: false, message: 'Internal server error during registration.', error: error.message });
   }
 });
 
@@ -111,7 +102,7 @@ router.post('/register', async (req, res) => {
 router.post('/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
-    
+
     const newContact = new Contact({
       name,
       email,
@@ -121,8 +112,8 @@ router.post('/contact', async (req, res) => {
     await newContact.save();
     res.status(201).json({ success: true, message: 'Message sent successfully!' });
   } catch (error) {
-    console.error('Error in contact form:', error.message);
-    res.status(500).json({ success: false, message: 'Server error while sending message.' });
+    console.error('Error in contact form:', error);
+    res.status(500).json({ success: false, message: 'Server error while sending message.', error: error.message });
   }
 });
 
