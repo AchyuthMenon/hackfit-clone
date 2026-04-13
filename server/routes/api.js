@@ -91,9 +91,9 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: messages.join(', ') });
     }
 
-    // 7. Safe fallback for other Server Errors
+    // 7. Safe fallback for other Server Errors (Temporarily exposing error for debugging)
     console.error('[POST] /api/register - Server Error:', error.message);
-    res.status(500).json({ success: false, message: 'Internal server error during registration.' });
+    res.status(500).json({ success: false, message: 'Internal server error during registration.', error: error.message });
   }
 });
 

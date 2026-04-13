@@ -22,7 +22,7 @@ const RegistrationModal = ({ isOpen, onClose }) => {
     const toastId = toast.loading('Submitting Registration...');
     try {
       const payload = { ...formData, members: formData.members.split(',').map(m => m.trim()).filter(m => m) };
-      const response = await axios.post('http://localhost:5000/api/register', payload);
+      const response = await axios.post('https://hackfit-clone.onrender.com/api/register', payload);
       if (response.data.success) {
         toast.success('Registration successful! Welcome to HackFit.', { id: toastId });
         setTimeout(() => {
@@ -31,8 +31,10 @@ const RegistrationModal = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error(error);
-      const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
-      toast.error(errorMessage, { id: toastId });
+      const data = error.response?.data;
+      const errorMessage = data?.message || 'Registration failed. Please try again.';
+      const detailedError = data?.error ? ` (${data.error})` : '';
+      toast.error(`${errorMessage}${detailedError}`, { id: toastId });
     }
   };
 
