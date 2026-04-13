@@ -17,6 +17,16 @@ const sanitizeInput = (input) => {
 // @desc    Register a team for the hackathon
 router.post('/register', async (req, res) => {
   console.log(`[POST] /api/register - Received registration request`);
+  
+  // New: Check if DB is actually connected
+  if (Registration.db.readyState !== 1) {
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Database is not connected. Please check your Render environment variables (MONGO_URI).',
+      error: 'DB_DISCONNECTED' 
+    });
+  }
+
   try {
     let { teamName, leaderName, email, phone, track, college, members } = req.body;
 
