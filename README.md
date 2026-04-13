@@ -3,7 +3,7 @@
 A high-performance, secure, and visually stunning Full-Stack clone of the HackFit 4.0 landing page. This project features a neo-digital cyberpunk aesthetic with a robust team registration system and interactive UI components.
 
 ## 🚀 Live Demo
-- **Frontend**: [https://hackfit-clone.vercel.app/](https://hackfit-clone.vercel.app/)
+- **Frontend**: [https://hackfit-clone-git-main-achyuthmenons-projects.vercel.app/](https://hackfit-clone-git-main-achyuthmenons-projects.vercel.app/)
 - **Backend API**: [https://hackfit-clone.onrender.com/](https://hackfit-clone.onrender.com/)
 
 ---
